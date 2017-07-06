@@ -1,0 +1,51 @@
+import pandas as pd
+import numpy as np
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score
+
+ttd = pd.read_csv('C:/Users/brett.block/Desktop/TTD/TTD_SQL.csv')
+def func(row):
+    if row['FavGenre'] == 'BlindedGenre1':
+        return 1
+    elif row['FavGenre'] == 'BlindedGenre2':
+        return 2 
+    elif row['FavGenre'] == 'BlindedGenre3':
+        return 3 
+    elif row['FavGenre'] == 'BlindedGenre4':
+        return 4 
+    elif row['FavGenre'] == 'BlindedGenre5':
+        return 5         
+
+browserdummy = pd.get_dummies(ttd['PrimaryBrowser'], prefix='Browser')
+ttd = ttd.join(browserdummy)
+ttd = ttd.drop('PrimaryBrowser', 1)
+ttd['genre'] = ttd.apply(func, axis=1)
+
+ttd.to_csv('TTD_Updated.csv')
+
+train = ttd[ttd.FavGenre != '?????']
+test = ttd[ttd.FavGenre == '?????']
+
+xtrain = train[['G1','G2','G3','G4','G5','Browser_Alt Browser','Browser_Chrome','Browser_IE','Browser_Safari','Browser_Unidentified']]
+xtest = test[['G1','G2','G3','G4','G5','Browser_Alt Browser','Browser_Chrome','Browser_IE','Browser_Safari','Browser_Unidentified']]
+ytrain = train[['genre']]
+ytest = test[['genre']]
+ytrain = np.ravel(ytrain)
+ytest = np.ravel(ytest)
+lr = LogisticRegression().fit(xtrain, ytrain)
+
+yhat = lr.predict(xtrain)
+train['prediction'] = yhat
+print accuracy_score(ytrain, yhat)
+
+
+predict = lr.predict(xtest)
+test['prediction'] = predict
+
+#test.to_csv('Q2 TTD Result.csv')
+
+from sklearn.metrics.pairwise import cosine_similarity
+
+
+
+

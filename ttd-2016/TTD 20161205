@@ -1,0 +1,39 @@
+import pandas as pd
+import numpy as np
+from sklearn.linear_model import LogisticRegression
+ttd = pd.read_csv('TTD_Data.csv')
+
+################################################
+# Data cleanup and formatting#
+################################################
+
+
+
+################################################
+#Creating site-level aggregations#
+################################################
+
+gdist_site = pd.pivot_table(ttd[ttd.FavoriteMovieGenre != '?????'], values = 'tdid', index =['site']
+                                , columns = ['FavoriteMovieGenre']
+                                , aggfunc=lambda x: len(x.unique())).fillna(0)
+
+gpct_site = gdist_site.div(gdist_site.sum(1), axis='index')
+gpct_site.columns = ['G1Known','G2Known', 'G3Known', 'G4Known', 'G5Known']
+df2 = ttd.join(gpct_site,on='site')
+#df2.groupby('tdid'
+
+################################################
+#logit model#
+################################################
+dummy = ttd.groupby(['tdid','osfamily','browser'])
+OS_dummy = pd.get_dummies(dummy['osfamily'], prefix='os')
+browser_dummy = pd.get_dummies(dummy['browser'], prefix='browser')
+dummy = dummy.size()
+
+dummy = dummy['tdid'].join(OS_dummy.ix)
+#dummy = dummy.join(browser_dummy.ix)
+print dummy
+#data =  ttd['].join(dummy_ranks.ix[:, 'prestige_2':])
+
+lr = LogisticRegression(multi_class='ovr')
+#lr.fit(
