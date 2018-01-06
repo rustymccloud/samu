@@ -4,7 +4,7 @@ import urllib2 as url
 from bs4 import BeautifulSoup
 import re
 import smtplib
-
+import datetime
 
 # NOAA forecast for Cone Peak in Big Sur
 
@@ -26,9 +26,10 @@ def extract_between(text, start, end, nth=1):
     return text.split(start, nth)[-1].split(end, nth)[0]
 
 fcast = repr(extract_between(stringy_soup, start, end))
+now = datetime.date.today().strftime("%B %d, %Y")
 
-if fcast.lower().find('rain') == -1:
-    msg = 'No Snow Cone :('
+if fcast.lower().find('snow') == -1:
+    msg = 'No Snow Cone forecasted for the week starting ' + now
 else:
     msg = 'The fate of the world depends on you seeing this snow cone dude!!!'
 
@@ -40,15 +41,16 @@ server.ehlo()
 server.starttls()
 
 #Next, log in to the server
-server.login("olrustymccloud@gmail.com", "poopword")
+server.login("olrustymccloud@gmail.com", "PCT4life!")
 me = 'olrustymccloud@gmail.com'
-who = 'brettblock@gmail.com'
+who = 'brettvanderblock@gmail.com,brettblock@gmail.com'
+
 email = "\r\n".join([
   "From: "+me,
-  "To: "+who,
-  "Subject: A Communique from Cone Peak",
+  "Bcc: "+who,
+  "Subject: A Communique from Cone Peak - "+now,
   "",
   msg
   ])
 
-server.sendmail("olrustymccloud@gmail.com","brettblock@gmail.com",email)
+server.sendmail(me,who,email)
