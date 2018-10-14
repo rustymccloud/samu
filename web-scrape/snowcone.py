@@ -53,7 +53,7 @@ server.ehlo()
 server.starttls()
 
 #Next, log in to the server
-server.login("olrustymccloud@gmail.com", "PCT4life!")
+server.login("olrustymccloud@gmail.com", "passwordy")
 me = 'olrustymccloud@gmail.com'
 who = 'brettvanderblock@gmail.com,brettblock@gmail.com,charlielewis@gmail.com,korydoran@gmail.com'
 
